@@ -9,7 +9,6 @@
   requireFile,
   makeDesktopItem,
   copyDesktopItems,
-  pkgs,
 }:
 let
   file = requireFile {
@@ -18,44 +17,42 @@ let
     url = "https://mslivo.itch.io/sandtrix?download";
   };
 
-  raw = pkgs.runCommand "sandtrix-raw" { } ''
-    ${lib.getExe gnutar} xvf ${file}
-    ${lib.getExe unzip} -j sandtrix-1.0-SNAPSHOT-jar-with-dependencies.jar sprites/appicon.png
-
-    mkdir -p $out/
-    mv appicon.png $out/sandtrix.png
-    mv sandtrix-1.0-SNAPSHOT-jar-with-dependencies.jar $out/sandtrix.jar
-  '';
-
   libs = lib.makeLibraryPath [
     libGL
   ];
 
   env = "LD_LIBRARY_PATH=${libs}";
-  cmd = "${lib.getExe jdk23} -jar ${raw}/sandtrix.jar";
+  cmd = "${lib.getExe jdk23} -jar $out/lib/sandtrix.jar";
 in
 stdenvNoCC.mkDerivation (finalAttrs: {
   name = "sandtrix";
   version = "3.0.0";
 
+  src = file;
+
   nativeBuildInputs = [
     copyDesktopItems
   ];
 
-  desktopItems = [
+  desktopItem = [
     (makeDesktopItem {
       name = "sandtrix";
       desktopName = "Sandtrix";
-      icon = "${raw}/sandtrix.png";
-      exec = "env ${env} ${cmd}";
+      icon = "Sandtrix";
+      exec = "sandtrix";
     })
   ];
 
   unpackPhase = ''
     runHook preUnpack
 
-    mkdir -p $out/share/pixmaps
-    cp ${raw}/sandtrix.png $out/share/pixmaps
+    ${lib.getExe gnutar} xvf $src
+    ${lib.getExe unzip} -j sandtrix-1.0-SNAPSHOT-jar-with-dependencies.jar sprites/appicon.png
+
+    mkdir -p $out/lib
+    mkdir -p $out/share/icons/hicolor/32x32/apps
+    mv appicon.png $out/share/icons/hicolor/32x32/apps/Sandtrix.png
+    mv sandtrix-1.0-SNAPSHOT-jar-with-dependencies.jar $out/lib/sandtrix.jar
 
     runHook postUnpack
   '';
