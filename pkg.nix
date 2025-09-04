@@ -61,11 +61,12 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     runHook preInstall
 
      mkdir -p $out/bin
+     cp ${./run} $out/bin/sandtrix
 
-     echo "#! ${lib.getExe bash}" > $out/bin/sandtrix
-     echo "${env} ${cmd}" >> $out/bin/sandtrix
-     chmod +x $out/bin/sandtrix
-
+     substituteInPlace $out/bin/sandtrix \
+       --subst-var-by bash ${lib.getExe bash} \
+       --subst-var-by cmd "${env} ${cmd}"
+     
     runHook postInstall
   '';
 })
