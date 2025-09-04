@@ -1,8 +1,8 @@
 # Sandnix
-Nix package and flake for the Game [Sandtrix](mslivo.itch.io/sandtrix) 
+Nix package and flake for the Game [Sandtrix](https://mslivo.itch.io/sandtrix) 
 
 ## Prerequisites
-Download `Sandtrix_3.0_LINUX.tar.gz` from [mslivo.itch.io/sandtrix](mslivo.itch.io/sandtrix) and add it to the nix store:
+Download `Sandtrix_3.0_LINUX.tar.gz` from [mslivo.itch.io/sandtrix](https://mslivo.itch.io/sandtrix) and add it to the nix store: 
 
 ```bash
 $ nix-store --add-fixed sha256 Sandtrix_3.0_LINUX.tar.gz
